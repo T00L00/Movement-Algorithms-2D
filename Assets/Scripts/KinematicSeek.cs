@@ -6,6 +6,7 @@ public class KinematicSeek : MonoBehaviour
 {
     public GameObject[] Targets;
     public float maxSpeed;
+    public float targetRadius;
 
     private Queue<GameObject> targetQueue;
     private GameObject currentTarget;
@@ -25,24 +26,29 @@ public class KinematicSeek : MonoBehaviour
 
     public void Steer()
     {
-        if (currentTarget != null 
-            && Vector2.Distance(currentTarget.transform.position, transform.position) >= 0.1f)
+        Vector2 direction = currentTarget.transform.position - transform.position;
+        float distance = direction.magnitude;
+
+        if (distance <= targetRadius)
         {
-            Vector2 velocity = currentTarget.transform.position - transform.position;
-            velocity.Normalize();
-            velocity *= maxSpeed;
-
-            FaceTarget(velocity);
-
-            float newX = transform.position.x + velocity.x * Time.deltaTime;
-            float newY = transform.position.y + velocity.y * Time.deltaTime;
-
-            transform.position = new Vector2(newX, newY);
+            targetQueue.Enqueue(currentTarget);
+            currentTarget = targetQueue.Dequeue();
             return;
         }
 
-        targetQueue.Enqueue(currentTarget);
-        currentTarget = targetQueue.Dequeue();        
+        Vector2 velocity = direction.normalized * (distance / targetRadius);
+
+        if (velocity.magnitude > maxSpeed)
+        {
+            velocity = velocity.normalized * maxSpeed;
+        }
+
+        FaceTarget(velocity);
+
+        float newX = transform.position.x + velocity.x * Time.deltaTime;
+        float newY = transform.position.y + velocity.y * Time.deltaTime;
+
+        transform.position = new Vector2(newX, newY);
     }
 
     public void FaceTarget(Vector3 velocity)
