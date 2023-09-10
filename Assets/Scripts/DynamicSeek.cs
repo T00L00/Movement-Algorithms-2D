@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class DynamicSeek : MonoBehaviour
 {
+    public Rigidbody2D rb;
     public GameObject[] Targets;
+    public float maxSpeed;
     public float maxAcceleration;
+    public float targetRadius;
+    public float slowRadius;
+    public float dt = 0.1f;
 
     private Vector2 currentVelocity;
 
@@ -28,28 +33,46 @@ public class DynamicSeek : MonoBehaviour
 
     public void Steer()
     {
-        if (currentTarget != null
-            && Vector2.Distance(currentTarget.transform.position, transform.position) >= 0.1f)
+        Vector2 direction = currentTarget.transform.position - transform.position;
+        float distance = direction.magnitude;
+
+        if (distance <= targetRadius)
         {
-            Vector2 acceleration = currentTarget.transform.position - transform.position;
-            acceleration.Normalize();
-            acceleration *= maxAcceleration;
-
-            currentVelocity = new Vector2(
-                currentVelocity.x + acceleration.x * Time.deltaTime, 
-                currentVelocity.y + acceleration.y * Time.deltaTime);
-
-            FaceTarget(currentVelocity);
-
-            float newX = transform.position.x + currentVelocity.x * Time.deltaTime;
-            float newY = transform.position.y + currentVelocity.y * Time.deltaTime;
-
-            transform.position = new Vector2(newX, newY);
+            targetQueue.Enqueue(currentTarget);
+            currentTarget = targetQueue.Dequeue();
             return;
         }
 
-        targetQueue.Enqueue(currentTarget);
-        currentTarget = targetQueue.Dequeue();
+        float targetSpeed = 0;
+        Vector2 targetVelocity = default;
+
+        if (distance > slowRadius)
+        {
+            targetSpeed = maxSpeed;
+        }
+        else
+        {
+            targetSpeed = maxSpeed * (distance / slowRadius);
+
+        }
+
+        targetVelocity = direction.normalized * targetSpeed;        
+
+        Vector2 acceleration = targetVelocity - rb.velocity;
+        acceleration /= dt;
+
+        if (acceleration.magnitude > maxAcceleration)
+        {
+            acceleration = acceleration.normalized * maxAcceleration;
+        }
+
+        currentVelocity = new Vector2(
+            currentVelocity.x + acceleration.x * Time.deltaTime,
+            currentVelocity.y + acceleration.y * Time.deltaTime);
+
+        FaceTarget(currentVelocity);
+
+        rb.velocity = currentVelocity;
     }
 
     public void FaceTarget(Vector3 velocity)
