@@ -21,9 +21,9 @@ public class KinematicWander : MonoBehaviour
 
     public void Steer()
     {
-        Vector2 velocity = MaxSpeed * transform.right;
-
         transform.Rotate(0, 0, RandomBinomial() * MaxRotation);
+
+        Vector2 velocity = MaxSpeed * transform.right;
 
         float newX = transform.position.x + velocity.x * Time.deltaTime;
         float newY = transform.position.y + velocity.y * Time.deltaTime;
