@@ -709,6 +709,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1485709828}
   - component: {fileID: 1485709829}
+  - component: {fileID: 1485709830}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -740,7 +741,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1485709827}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30d797401355dad46ac4988a3453cea9, type: 3}
   m_Name: 
@@ -752,6 +753,20 @@ MonoBehaviour:
   - {fileID: 1684266384}
   maxSpeed: 5
   targetRadius: 0.5
+--- !u!114 &1485709830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485709827}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c650c3e97636e74c912b12ac3cf791a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSpeed: 5
+  MaxRotation: 20
 --- !u!1 &1486306758
 GameObject:
   m_ObjectHideFlags: 0
